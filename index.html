@@ -239,7 +239,7 @@
             font-size: 16px;
             line-height: 1.4;
             word-break: break-word;
-            text-align: left;
+            text-align: justify;
             display: inline-block;
         }
 
@@ -420,16 +420,16 @@
 
             // Display contact info
             let infoHTML = '';
-            infoHTML += `<div style="font-size: 37px; font-weight: 700; margin-bottom: 0px; text-align: left;">${fullName}</div>`;
-            if (company) infoHTML += `<div style="font-size: 29px; opacity: 0.9; font-weight: 400; text-align: left;">${company}</div>`;
-            if (email) infoHTML += `<div style="font-size: 21px; opacity: 0.85; margin-top: 5px; text-align: left;">${email}</div>`;
-            if (phone) infoHTML += `<div style="font-size: 21px; opacity: 0.85; text-align: left;">${phone}</div>`;
+            infoHTML += `<div style="font-size: 37px; font-weight: 700; margin-bottom: 0px; text-align: justify;">${fullName}</div>`;
+            if (company) infoHTML += `<div style="font-size: 29px; opacity: 0.9; font-weight: 400; text-align: justify;">${company}</div>`;
+            if (email) infoHTML += `<div style="font-size: 21px; opacity: 0.85; margin-top: 5px; text-align: justify;">${email}</div>`;
+            if (phone) infoHTML += `<div style="font-size: 21px; opacity: 0.85; text-align: justify;">${phone}</div>`;
             
             const infoSection = document.getElementById('infoSection');
             infoSection.innerHTML = infoHTML;
             infoSection.style.color = textColor;
-            infoSection.style.textAlign = 'left';
-            infoSection.style.alignItems = 'flex-start';
+            infoSection.style.textAlign = 'justify';
+            infoSection.style.alignItems = 'center';
 
             // Clear previous QR code
             document.getElementById('qrcode').innerHTML = '';
