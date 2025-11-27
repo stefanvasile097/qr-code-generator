@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BUSINESS CARD GENERATOR</title>
+    <title>QR Code Generator</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 500px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
@@ -34,11 +34,23 @@
             margin-bottom: 8px;
         }
 
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
         .card {
             background: white;
             border-radius: 12px;
             padding: 30px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
         }
 
         .form-group {
@@ -53,7 +65,9 @@
             font-size: 14px;
         }
 
-        input {
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
             width: 100%;
             padding: 10px 12px;
             border: 2px solid #e0e0e0;
@@ -67,25 +81,50 @@
             border-color: #667eea;
         }
 
-        .logo-upload {
-            margin-bottom: 15px;
+        .color-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
-        .logo-preview {
-            display: none;
-            margin-top: 10px;
-            text-align: center;
+        .color-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .logo-preview img {
-            max-width: 80px;
-            max-height: 80px;
-            border-radius: 8px;
+        input[type="color"] {
+            width: 50px;
+            height: 40px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .position-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .position-btn {
+            flex: 1;
+            padding: 10px;
             border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
         }
 
-        .logo-preview.show {
-            display: block;
+        .position-btn:hover {
+            border-color: #667eea;
+        }
+
+        .position-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
         }
 
         .file-input-wrapper {
@@ -117,6 +156,23 @@
             background: #f0f1ff;
         }
 
+        .logo-preview {
+            display: none;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .logo-preview img {
+            max-width: 60px;
+            max-height: 60px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .logo-preview.show {
+            display: block;
+        }
+
         .generate-btn {
             width: 100%;
             padding: 14px;
@@ -136,7 +192,6 @@
         }
 
         .preview-section {
-            margin-top: 30px;
             display: none;
         }
 
@@ -144,59 +199,56 @@
             display: block;
         }
 
-        .preview-header {
-            text-align: center;
+        .business-card {
+            width: 100%;
+            aspect-ratio: 1.75;
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             margin-bottom: 20px;
         }
 
-        .preview-header h2 {
-            color: #333;
-            font-size: 20px;
-            margin-bottom: 15px;
+        .business-card.qr-left {
+            flex-direction: row;
         }
 
-        .qr-container {
-            text-align: center;
-            margin-bottom: 20px;
+        .business-card.qr-right {
+            flex-direction: row-reverse;
+        }
+
+        .qr-section {
+            flex-shrink: 0;
         }
 
         #qrcode {
-            display: inline-block;
-            padding: 20px;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        .contact-preview {
-            background: #f8f9fa;
+            padding: 10px;
             border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
         }
 
-        .contact-preview h3 {
-            color: #333;
-            font-size: 18px;
-            margin-bottom: 12px;
-            text-align: center;
+        #qrcode canvas {
+            display: block;
         }
 
-        .contact-info {
-            font-size: 14px;
-            color: #555;
-            line-height: 1.8;
+        .info-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .contact-info div {
-            margin-bottom: 6px;
+        .info-section div {
+            font-size: 16px;
+            line-height: 1.6;
+            word-break: break-word;
         }
 
-        .contact-info strong {
-            color: #333;
-            min-width: 80px;
-            display: inline-block;
+        .download-section {
+            margin-top: 20px;
         }
 
         .download-btn {
@@ -218,12 +270,18 @@
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 0 10px;
+            .content {
+                grid-template-columns: 1fr;
             }
-            
-            .card {
+
+            .business-card {
+                flex-direction: column !important;
                 padding: 20px;
+                gap: 20px;
+            }
+
+            .info-section div {
+                font-size: 14px;
             }
         }
     </style>
@@ -231,73 +289,98 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📇 QR Code Generator</h1>
-            <p>Create your digital business card</p>
+            <h1>📇 Business Card Generator</h1>
+            <p>Create your professional digital business card</p>
         </div>
 
-        <div class="card">
-            <form id="vcardForm">
-                <div class="form-group">
-                    <label>Full Name *</label>
-                    <input type="text" id="fullName" placeholder="John Doe" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Email *</label>
-                    <input type="email" id="email" placeholder="john@example.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Phone</label>
-                    <input type="tel" id="phone" placeholder="+1 234 567 8900">
-                </div>
-
-                <div class="form-group">
-                    <label>Company</label>
-                    <input type="text" id="company" placeholder="Acme Inc.">
-                </div>
-
-                <div class="form-group logo-upload">
-                    <label>Add Logo (Optional)</label>
-                    <div class="file-input-wrapper">
-                        <input type="file" id="logoInput" accept="image/*">
-                        <label for="logoInput" class="file-input-label">
-                            📎 Choose Logo Image
-                        </label>
+        <div class="content">
+            <div class="card">
+                <h2>Contact Information</h2>
+                <form id="vcardForm">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="fullName" placeholder="John Doe" required>
                     </div>
-                    <div class="logo-preview" id="logoPreview">
-                        <img id="logoImage" src="" alt="Logo preview">
+
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="email" placeholder="john@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="phone" placeholder="+1 234 567 8900">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Company</label>
+                        <input type="text" id="company" placeholder="Acme Inc.">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Add Logo (Optional)</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="logoInput" accept="image/*">
+                            <label for="logoInput" class="file-input-label">
+                                📎 Choose Logo Image
+                            </label>
+                        </div>
+                        <div class="logo-preview" id="logoPreview">
+                            <img id="logoImage" src="" alt="Logo preview">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Card Design</label>
+                        <div class="color-group">
+                            <div class="color-input">
+                                <input type="color" id="cardBgColor" value="#1e293b">
+                                <span>Background</span>
+                            </div>
+                            <div class="color-input">
+                                <input type="color" id="textColor" value="#ffffff">
+                                <span>Text Color</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>QR Code Position</label>
+                        <div class="position-group">
+                            <button type="button" class="position-btn active" data-position="left">Left</button>
+                            <button type="button" class="position-btn" data-position="right">Right</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="generate-btn">🎨 Generate Business Card</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Preview & Download</h2>
+                <div class="preview-section" id="previewSection">
+                    <div class="business-card qr-left" id="businessCard">
+                        <div class="qr-section">
+                            <div id="qrcode"></div>
+                        </div>
+                        <div class="info-section" id="infoSection"></div>
+                    </div>
+
+                    <div class="download-section">
+                        <button class="download-btn" id="downloadPNG">📥 Download as PNG</button>
                     </div>
                 </div>
-
-                <button type="submit" class="generate-btn">🎨 Generate QR Code</button>
-            </form>
-
-            <div class="preview-section" id="previewSection">
-                <div class="preview-header">
-                    <h2>Your QR Code</h2>
-                </div>
-
-                <div class="contact-preview">
-                    <h3>Contact Information</h3>
-                    <div class="contact-info" id="contactInfo"></div>
-                </div>
-
-                <div class="qr-container">
-                    <div id="qrcode"></div>
-                </div>
-
-                <button class="download-btn" id="downloadPNG">📥 Download PNG</button>
-                <button class="download-btn" id="downloadSVG">📥 Download SVG</button>
             </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         let qrCodeInstance = null;
         let currentVCard = '';
         let logoDataUrl = null;
+        let qrPosition = 'left';
 
         // Logo upload handler
         document.getElementById('logoInput').addEventListener('change', function(e) {
@@ -308,15 +391,22 @@
                     logoDataUrl = event.target.result;
                     document.getElementById('logoImage').src = logoDataUrl;
                     document.getElementById('logoPreview').classList.add('show');
-                    
-                    // Update label text
                     document.querySelector('.file-input-label').textContent = '✓ ' + file.name;
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        // Generate QR Code
+        // Position selector
+        document.querySelectorAll('.position-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.position-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                qrPosition = this.dataset.position;
+            });
+        });
+
+        // Generate Business Card
         document.getElementById('vcardForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -324,6 +414,8 @@
             const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
             const company = document.getElementById('company').value;
+            const cardBgColor = document.getElementById('cardBgColor').value;
+            const textColor = document.getElementById('textColor').value;
 
             // Create vCard format
             currentVCard = 'BEGIN:VCARD\n';
@@ -334,13 +426,21 @@
             if (company) currentVCard += `ORG:${company}\n`;
             currentVCard += 'END:VCARD';
 
-            // Display contact info preview
-            let contactHTML = '';
-            contactHTML += `<div><strong>Name:</strong> ${fullName}</div>`;
-            contactHTML += `<div><strong>Email:</strong> ${email}</div>`;
-            if (phone) contactHTML += `<div><strong>Phone:</strong> ${phone}</div>`;
-            if (company) contactHTML += `<div><strong>Company:</strong> ${company}</div>`;
-            document.getElementById('contactInfo').innerHTML = contactHTML;
+            // Update card styling
+            const businessCard = document.getElementById('businessCard');
+            businessCard.style.backgroundColor = cardBgColor;
+            businessCard.className = `business-card qr-${qrPosition}`;
+
+            // Display contact info
+            let infoHTML = '';
+            infoHTML += `<div style="font-size: 22px; font-weight: 600; margin-bottom: 10px;">${fullName}</div>`;
+            if (company) infoHTML += `<div style="font-size: 16px; opacity: 0.9;">${company}</div>`;
+            if (email) infoHTML += `<div style="font-size: 14px; opacity: 0.85;">${email}</div>`;
+            if (phone) infoHTML += `<div style="font-size: 14px; opacity: 0.85;">${phone}</div>`;
+            
+            const infoSection = document.getElementById('infoSection');
+            infoSection.innerHTML = infoHTML;
+            infoSection.style.color = textColor;
 
             // Clear previous QR code
             document.getElementById('qrcode').innerHTML = '';
@@ -348,8 +448,8 @@
             // Generate new QR code
             qrCodeInstance = new QRCode(document.getElementById('qrcode'), {
                 text: currentVCard,
-                width: 256,
-                height: 256,
+                width: 180,
+                height: 180,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.H
@@ -373,13 +473,13 @@
                 const ctx = canvas.getContext('2d');
                 const img = new Image();
                 img.onload = function() {
-                    const logoSize = canvas.width * 0.2; // 20% of QR size
+                    const logoSize = canvas.width * 0.25;
                     const x = (canvas.width - logoSize) / 2;
                     const y = (canvas.height - logoSize) / 2;
                     
                     // Draw white background for logo
                     ctx.fillStyle = 'white';
-                    ctx.fillRect(x - 5, y - 5, logoSize + 10, logoSize + 10);
+                    ctx.fillRect(x - 8, y - 8, logoSize + 16, logoSize + 16);
                     
                     // Draw logo
                     ctx.drawImage(img, x, y, logoSize, logoSize);
@@ -390,44 +490,18 @@
 
         // Download as PNG
         document.getElementById('downloadPNG').addEventListener('click', function() {
-            const canvas = document.querySelector('#qrcode canvas');
-            if (canvas) {
+            const businessCard = document.getElementById('businessCard');
+            
+            html2canvas(businessCard, {
+                scale: 2,
+                backgroundColor: null,
+                logging: false
+            }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'qr-code.png';
+                link.download = 'business-card.png';
                 link.href = canvas.toDataURL();
                 link.click();
-            }
-        });
-
-        // Download as SVG
-        document.getElementById('downloadSVG').addEventListener('click', function() {
-            const canvas = document.querySelector('#qrcode canvas');
-            if (canvas) {
-                const ctx = canvas.getContext('2d');
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                
-                let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}">`;
-                svg += `<rect width="100%" height="100%" fill="#ffffff"/>`;
-                
-                for (let y = 0; y < canvas.height; y++) {
-                    for (let x = 0; x < canvas.width; x++) {
-                        const index = (y * canvas.width + x) * 4;
-                        if (imageData.data[index] < 128) {
-                            svg += `<rect x="${x}" y="${y}" width="1" height="1" fill="#000000"/>`;
-                        }
-                    }
-                }
-                
-                svg += '</svg>';
-                
-                const blob = new Blob([svg], { type: 'image/svg+xml' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.download = 'qr-code.svg';
-                link.href = url;
-                link.click();
-                URL.revokeObjectURL(url);
-            }
+            });
         });
     </script>
 </body>
