@@ -334,8 +334,13 @@
             <h2>Contact Information</h2>
             <form id="vcardForm">
                 <div class="form-group">
-                    <label>Full Name *</label>
-                    <input type="text" id="fullName" placeholder="John Doe" required>
+                    <label>First Name *</label>
+                    <input type="text" id="firstName" placeholder="John" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Last Name *</label>
+                    <input type="text" id="lastName" placeholder="Doe" required>
                 </div>
 
                 <div class="form-group">
@@ -345,7 +350,40 @@
 
                 <div class="form-group">
                     <label>Phone</label>
-                    <input type="tel" id="phone" placeholder="+1 234 567 8900">
+                    <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px;">
+                        <select id="countryCode" style="padding: 10px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; cursor: pointer;">
+                            <option value="+1">🇺🇸 +1 (US)</option>
+                            <option value="+44">🇬🇧 +44 (UK)</option>
+                            <option value="+40" selected>🇷🇴 +40 (RO)</option>
+                            <option value="+49">🇩🇪 +49 (DE)</option>
+                            <option value="+33">🇫🇷 +33 (FR)</option>
+                            <option value="+34">🇪🇸 +34 (ES)</option>
+                            <option value="+39">🇮🇹 +39 (IT)</option>
+                            <option value="+31">🇳🇱 +31 (NL)</option>
+                            <option value="+32">🇧🇪 +32 (BE)</option>
+                            <option value="+41">🇨🇭 +41 (CH)</option>
+                            <option value="+43">🇦🇹 +43 (AT)</option>
+                            <option value="+45">🇩🇰 +45 (DK)</option>
+                            <option value="+46">🇸🇪 +46 (SE)</option>
+                            <option value="+47">🇳🇴 +47 (NO)</option>
+                            <option value="+48">🇵🇱 +48 (PL)</option>
+                            <option value="+351">🇵🇹 +351 (PT)</option>
+                            <option value="+30">🇬🇷 +30 (GR)</option>
+                            <option value="+36">🇭🇺 +36 (HU)</option>
+                            <option value="+420">🇨🇿 +420 (CZ)</option>
+                            <option value="+91">🇮🇳 +91 (IN)</option>
+                            <option value="+86">🇨🇳 +86 (CN)</option>
+                            <option value="+81">🇯🇵 +81 (JP)</option>
+                            <option value="+82">🇰🇷 +82 (KR)</option>
+                            <option value="+61">🇦🇺 +61 (AU)</option>
+                            <option value="+64">🇳🇿 +64 (NZ)</option>
+                            <option value="+55">🇧🇷 +55 (BR)</option>
+                            <option value="+52">🇲🇽 +52 (MX)</option>
+                            <option value="+7">🇷🇺 +7 (RU)</option>
+                            <option value="+27">🇿🇦 +27 (ZA)</option>
+                        </select>
+                        <input type="tel" id="phone" placeholder="712 345 678">
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -423,6 +461,39 @@
         let logoDataUrl = null;
         let formData = {};
 
+        // Phone number formatting
+        document.getElementById('phone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            let formatted = '';
+            
+            const countryCode = document.getElementById('countryCode').value;
+            
+            // Format based on country
+            if (countryCode === '+1') {
+                // US format: (123) 456-7890
+                if (value.length > 0) formatted = value.substring(0, 3);
+                if (value.length >= 4) formatted += ' ' + value.substring(3, 6);
+                if (value.length >= 7) formatted += ' ' + value.substring(6, 10);
+            } else if (countryCode === '+40') {
+                // Romania format: 712 345 678
+                if (value.length > 0) formatted = value.substring(0, 3);
+                if (value.length >= 4) formatted += ' ' + value.substring(3, 6);
+                if (value.length >= 7) formatted += ' ' + value.substring(6, 9);
+            } else if (countryCode === '+44') {
+                // UK format: 7911 123456
+                if (value.length > 0) formatted = value.substring(0, 4);
+                if (value.length >= 5) formatted += ' ' + value.substring(4, 10);
+            } else {
+                // Default format: XXX XXX XXX
+                if (value.length > 0) formatted = value.substring(0, 3);
+                if (value.length >= 4) formatted += ' ' + value.substring(3, 6);
+                if (value.length >= 7) formatted += ' ' + value.substring(6, 9);
+                if (value.length >= 10) formatted += ' ' + value.substring(9, 12);
+            }
+            
+            e.target.value = formatted;
+        });
+
         // Color picker handlers
         document.getElementById('cardBgColor').addEventListener('input', function(e) {
             document.getElementById('bgColorValue').textContent = e.target.value;
@@ -460,16 +531,24 @@
             e.preventDefault();
 
             // Store form data
+            const phoneNumber = document.getElementById('phone').value.replace(/\D/g, '');
+            const countryCode = document.getElementById('countryCode').value;
+            const fullPhone = phoneNumber ? countryCode + phoneNumber : '';
+            
             formData = {
-                fullName: document.getElementById('fullName').value,
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                fullName: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value,
                 email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
+                phone: fullPhone,
+                phoneDisplay: phoneNumber ? countryCode + ' ' + document.getElementById('phone').value : '',
                 company: document.getElementById('company').value
             };
 
             // Create vCard format
             currentVCard = 'BEGIN:VCARD\n';
             currentVCard += 'VERSION:3.0\n';
+            currentVCard += `N:${formData.lastName};${formData.firstName};;;\n`;
             currentVCard += `FN:${formData.fullName}\n`;
             if (formData.email) currentVCard += `EMAIL:${formData.email}\n`;
             if (formData.phone) currentVCard += `TEL:${formData.phone}\n`;
@@ -496,7 +575,7 @@
             infoHTML += `<div style="font-size: 37px; font-weight: 700; margin-bottom: 0px; text-align: center;">${formData.fullName}</div>`;
             if (formData.company) infoHTML += `<div style="font-size: 29px; opacity: 0.9; font-weight: 400; text-align: center;">${formData.company}</div>`;
             if (formData.email) infoHTML += `<div style="font-size: 21px; opacity: 0.85; margin-top: 5px; text-align: center;">${formData.email}</div>`;
-            if (formData.phone) infoHTML += `<div style="font-size: 21px; opacity: 0.85; text-align: center;">${formData.phone}</div>`;
+            if (formData.phoneDisplay) infoHTML += `<div style="font-size: 21px; opacity: 0.85; text-align: center;">${formData.phoneDisplay}</div>`;
             
             const infoSection = document.getElementById('infoSection');
             infoSection.innerHTML = infoHTML;
