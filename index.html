@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 600px;
             margin: 0 auto;
         }
 
@@ -32,12 +32,6 @@
         .header h1 {
             font-size: 28px;
             margin-bottom: 8px;
-        }
-
-        .content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
         }
 
         .card {
@@ -81,24 +75,90 @@
             border-color: #667eea;
         }
 
-        .color-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+        .generate-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
         }
 
-        .color-input {
+        .generate-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Preview Page Styles */
+        .preview-page {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .preview-page.show {
+            display: block;
+        }
+
+        .form-page.hide {
+            display: none;
+        }
+
+        .preview-controls {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .preview-controls h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .control-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .color-control {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .color-control label {
+            font-size: 14px;
+            color: #444;
+            font-weight: 500;
+        }
+
+        .color-picker-wrapper {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
         input[type="color"] {
-            width: 50px;
+            width: 60px;
             height: 40px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
+        }
+
+        .color-value {
+            font-size: 13px;
+            color: #666;
+            font-family: monospace;
         }
 
         .file-input-wrapper {
@@ -130,53 +190,20 @@
             background: #f0f1ff;
         }
 
-        .logo-preview {
-            display: none;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .logo-preview img {
-            max-width: 60px;
-            max-height: 60px;
-            border-radius: 8px;
-            border: 2px solid #e0e0e0;
-        }
-
-        .logo-preview.show {
-            display: block;
-        }
-
-        .generate-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-            margin-top: 10px;
-        }
-
-        .generate-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .preview-section {
-            display: none;
-        }
-
-        .preview-section.show {
-            display: block;
+        .preview-card-wrapper {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
         .business-card {
             width: 100%;
             max-width: 400px;
-            margin: 0 auto;
             border-radius: 16px;
             padding: 40px 30px;
             display: flex;
@@ -184,7 +211,6 @@
             align-items: center;
             gap: 25px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px;
         }
 
         .logo-display {
@@ -243,30 +269,47 @@
             display: inline-block;
         }
 
-        .download-section {
-            margin-top: 20px;
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
 
-        .download-btn {
+        .download-btn, .back-btn {
             width: 100%;
             padding: 12px;
-            background: #10b981;
-            color: white;
             border: none;
             border-radius: 8px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: background 0.3s;
-            margin-bottom: 8px;
+        }
+
+        .download-btn {
+            background: #10b981;
+            color: white;
         }
 
         .download-btn:hover {
             background: #059669;
         }
 
+        .back-btn {
+            background: #6b7280;
+            color: white;
+        }
+
+        .back-btn:hover {
+            background: #4b5563;
+        }
+
         @media (max-width: 768px) {
-            .content {
+            .control-row {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
                 grid-template-columns: 1fr;
             }
 
@@ -281,84 +324,93 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container form-page" id="formPage">
         <div class="header">
             <h1>📇 Business Card Generator</h1>
             <p>Create your professional digital business card</p>
         </div>
 
-        <div class="content">
-            <div class="card">
-                <h2>Contact Information</h2>
-                <form id="vcardForm">
-                    <div class="form-group">
-                        <label>Full Name *</label>
-                        <input type="text" id="fullName" placeholder="John Doe" required>
-                    </div>
+        <div class="card">
+            <h2>Contact Information</h2>
+            <form id="vcardForm">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="fullName" placeholder="John Doe" required>
+                </div>
 
-                    <div class="form-group">
-                        <label>Email *</label>
-                        <input type="email" id="email" placeholder="john@example.com" required>
-                    </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="email" placeholder="john@example.com" required>
+                </div>
 
-                    <div class="form-group">
-                        <label>Phone</label>
-                        <input type="tel" id="phone" placeholder="+1 234 567 8900">
-                    </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" id="phone" placeholder="+1 234 567 8900">
+                </div>
 
-                    <div class="form-group">
-                        <label>Company</label>
-                        <input type="text" id="company" placeholder="Acme Inc.">
-                    </div>
+                <div class="form-group">
+                    <label>Company</label>
+                    <input type="text" id="company" placeholder="Acme Inc.">
+                </div>
 
-                    <div class="form-group">
-                        <label>Add Logo (Optional)</label>
-                        <div class="file-input-wrapper">
-                            <input type="file" id="logoInput" accept="image/*">
-                            <label for="logoInput" class="file-input-label">
-                                📎 Choose Logo Image
-                            </label>
-                        </div>
-                        <div class="logo-preview" id="logoPreview">
-                            <img id="logoImage" src="" alt="Logo preview">
-                        </div>
-                    </div>
+                <button type="submit" class="generate-btn">🎨 Generate Business Card</button>
+            </form>
+        </div>
+    </div>
 
-                    <div class="form-group">
-                        <label>Card Design</label>
-                        <div class="color-group">
-                            <div class="color-input">
-                                <input type="color" id="cardBgColor" value="#1e293b">
-                                <span>Background</span>
-                            </div>
-                            <div class="color-input">
-                                <input type="color" id="textColor" value="#ffffff">
-                                <span>Text Color</span>
-                            </div>
-                        </div>
-                    </div>
+    <div class="preview-page" id="previewPage">
+        <div class="header">
+            <h1>📇 Business Card Preview</h1>
+            <p>Customize your card appearance</p>
+        </div>
 
-                    <button type="submit" class="generate-btn">🎨 Generate Business Card</button>
-                </form>
-            </div>
-
-            <div class="card">
-                <h2>Preview & Download</h2>
-                <div class="preview-section" id="previewSection">
-                    <div class="business-card" id="businessCard">
-                        <div class="logo-display" id="logoDisplay">
-                            <img id="cardLogoImage" src="" alt="Logo">
-                        </div>
-                        <div class="qr-section">
-                            <div id="qrcode"></div>
-                        </div>
-                        <div class="info-section" id="infoSection"></div>
-                    </div>
-
-                    <div class="download-section">
-                        <button class="download-btn" id="downloadPNG">📥 Download as PNG</button>
+        <div class="preview-controls">
+            <h2>Customization Options</h2>
+            
+            <div class="control-row">
+                <div class="color-control">
+                    <label>Background Color</label>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="cardBgColor" value="#1e293b">
+                        <span class="color-value" id="bgColorValue">#1e293b</span>
                     </div>
                 </div>
+                <div class="color-control">
+                    <label>Text Color</label>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="textColor" value="#ffffff">
+                        <span class="color-value" id="textColorValue">#ffffff</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Upload/Change Logo</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="logoInput" accept="image/*">
+                    <label for="logoInput" class="file-input-label">
+                        📎 Choose Logo Image
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-card-wrapper">
+            <div class="business-card" id="businessCard">
+                <div class="logo-display" id="logoDisplay">
+                    <img id="cardLogoImage" src="" alt="Logo">
+                </div>
+                <div class="qr-section">
+                    <div id="qrcode"></div>
+                </div>
+                <div class="info-section" id="infoSection"></div>
+            </div>
+        </div>
+
+        <div class="preview-controls">
+            <div class="action-buttons">
+                <button class="download-btn" id="downloadPNG">📥 Download as PNG</button>
+                <button class="back-btn" id="backBtn">← Back to Form</button>
             </div>
         </div>
     </div>
@@ -369,6 +421,18 @@
         let qrCodeInstance = null;
         let currentVCard = '';
         let logoDataUrl = null;
+        let formData = {};
+
+        // Color picker handlers
+        document.getElementById('cardBgColor').addEventListener('input', function(e) {
+            document.getElementById('bgColorValue').textContent = e.target.value;
+            document.getElementById('businessCard').style.backgroundColor = e.target.value;
+        });
+
+        document.getElementById('textColor').addEventListener('input', function(e) {
+            document.getElementById('textColorValue').textContent = e.target.value;
+            document.getElementById('infoSection').style.color = e.target.value;
+        });
 
         // Logo upload handler
         document.getElementById('logoInput').addEventListener('change', function(e) {
@@ -377,9 +441,15 @@
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     logoDataUrl = event.target.result;
-                    document.getElementById('logoImage').src = logoDataUrl;
-                    document.getElementById('logoPreview').classList.add('show');
+                    document.getElementById('cardLogoImage').src = logoDataUrl;
+                    document.getElementById('logoDisplay').classList.add('show');
                     document.querySelector('.file-input-label').textContent = '✓ ' + file.name;
+                    
+                    // Regenerate QR with logo
+                    if (qrCodeInstance) {
+                        document.getElementById('qrcode').innerHTML = '';
+                        generateQRCode();
+                    }
                 };
                 reader.readAsDataURL(file);
             }
@@ -389,52 +459,58 @@
         document.getElementById('vcardForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            const fullName = document.getElementById('fullName').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const company = document.getElementById('company').value;
-            const cardBgColor = document.getElementById('cardBgColor').value;
-            const textColor = document.getElementById('textColor').value;
+            // Store form data
+            formData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                company: document.getElementById('company').value
+            };
 
             // Create vCard format
             currentVCard = 'BEGIN:VCARD\n';
             currentVCard += 'VERSION:3.0\n';
-            currentVCard += `FN:${fullName}\n`;
-            if (email) currentVCard += `EMAIL:${email}\n`;
-            if (phone) currentVCard += `TEL:${phone}\n`;
-            if (company) currentVCard += `ORG:${company}\n`;
+            currentVCard += `FN:${formData.fullName}\n`;
+            if (formData.email) currentVCard += `EMAIL:${formData.email}\n`;
+            if (formData.phone) currentVCard += `TEL:${formData.phone}\n`;
+            if (formData.company) currentVCard += `ORG:${formData.company}\n`;
             currentVCard += 'END:VCARD';
 
-            // Update card styling
-            const businessCard = document.getElementById('businessCard');
-            businessCard.style.backgroundColor = cardBgColor;
+            // Switch to preview page
+            document.getElementById('formPage').classList.add('hide');
+            document.getElementById('previewPage').classList.add('show');
 
-            // Show/hide logo on card
-            const logoDisplay = document.getElementById('logoDisplay');
-            if (logoDataUrl) {
-                document.getElementById('cardLogoImage').src = logoDataUrl;
-                logoDisplay.classList.add('show');
-            } else {
-                logoDisplay.classList.remove('show');
-            }
+            // Initialize card
+            updateCard();
+        });
+
+        function updateCard() {
+            const businessCard = document.getElementById('businessCard');
+            const bgColor = document.getElementById('cardBgColor').value;
+            const txtColor = document.getElementById('textColor').value;
+            
+            businessCard.style.backgroundColor = bgColor;
 
             // Display contact info
             let infoHTML = '';
-            infoHTML += `<div style="font-size: 37px; font-weight: 700; margin-bottom: 0px; text-align: center;">${fullName}</div>`;
-            if (company) infoHTML += `<div style="font-size: 29px; opacity: 0.9; font-weight: 400; text-align: center;">${company}</div>`;
-            if (email) infoHTML += `<div style="font-size: 21px; opacity: 0.85; margin-top: 5px; text-align: center;">${email}</div>`;
-            if (phone) infoHTML += `<div style="font-size: 21px; opacity: 0.85; text-align: center;">${phone}</div>`;
+            infoHTML += `<div style="font-size: 37px; font-weight: 700; margin-bottom: 0px; text-align: center;">${formData.fullName}</div>`;
+            if (formData.company) infoHTML += `<div style="font-size: 29px; opacity: 0.9; font-weight: 400; text-align: center;">${formData.company}</div>`;
+            if (formData.email) infoHTML += `<div style="font-size: 21px; opacity: 0.85; margin-top: 5px; text-align: center;">${formData.email}</div>`;
+            if (formData.phone) infoHTML += `<div style="font-size: 21px; opacity: 0.85; text-align: center;">${formData.phone}</div>`;
             
             const infoSection = document.getElementById('infoSection');
             infoSection.innerHTML = infoHTML;
-            infoSection.style.color = textColor;
+            infoSection.style.color = txtColor;
             infoSection.style.textAlign = 'center';
             infoSection.style.alignItems = 'center';
 
-            // Clear previous QR code
+            // Generate QR code
+            generateQRCode();
+        }
+
+        function generateQRCode() {
             document.getElementById('qrcode').innerHTML = '';
 
-            // Generate new QR code with larger size for better scanning
             qrCodeInstance = new QRCode(document.getElementById('qrcode'), {
                 text: currentVCard,
                 width: 200,
@@ -444,16 +520,13 @@
                 correctLevel: QRCode.CorrectLevel.M
             });
 
-            // Add logo if uploaded (smaller to maintain scannability)
+            // Add logo if uploaded
             if (logoDataUrl) {
                 setTimeout(() => {
                     addLogoToQR();
                 }, 100);
             }
-
-            // Show preview section
-            document.getElementById('previewSection').classList.add('show');
-        });
+        }
 
         // Add logo to QR code
         function addLogoToQR() {
@@ -491,6 +564,12 @@
                 link.href = canvas.toDataURL();
                 link.click();
             });
+        });
+
+        // Back to form
+        document.getElementById('backBtn').addEventListener('click', function() {
+            document.getElementById('previewPage').classList.remove('show');
+            document.getElementById('formPage').classList.remove('hide');
         });
     </script>
 </body>
