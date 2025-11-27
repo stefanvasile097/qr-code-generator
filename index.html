@@ -101,32 +101,6 @@
             cursor: pointer;
         }
 
-        .position-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .position-btn {
-            flex: 1;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-        }
-
-        .position-btn:hover {
-            border-color: #667eea;
-        }
-
-        .position-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
         .file-input-wrapper {
             position: relative;
             overflow: hidden;
@@ -201,32 +175,51 @@
 
         .business-card {
             width: 100%;
-            aspect-ratio: 1.75;
-            border-radius: 12px;
-            padding: 30px;
+            max-width: 400px;
+            margin: 0 auto;
+            border-radius: 16px;
+            padding: 40px 30px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 30px;
+            gap: 25px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             margin-bottom: 20px;
         }
 
-        .business-card.qr-left {
-            flex-direction: row;
+        .logo-display {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .business-card.qr-right {
-            flex-direction: row-reverse;
+        .logo-display.show {
+            display: flex;
+        }
+
+        .logo-display img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .qr-section {
             flex-shrink: 0;
+            display: flex;
+            justify-content: center;
         }
 
         #qrcode {
             background: white;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         #qrcode canvas {
@@ -234,17 +227,19 @@
         }
 
         .info-section {
-            flex: 1;
+            width: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            gap: 8px;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
         }
 
         .info-section div {
             font-size: 16px;
             line-height: 1.6;
             word-break: break-word;
+            width: 100%;
         }
 
         .download-section {
@@ -275,9 +270,7 @@
             }
 
             .business-card {
-                flex-direction: column !important;
-                padding: 20px;
-                gap: 20px;
+                padding: 30px 20px;
             }
 
             .info-section div {
@@ -344,14 +337,6 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>QR Code Position</label>
-                        <div class="position-group">
-                            <button type="button" class="position-btn active" data-position="left">Left</button>
-                            <button type="button" class="position-btn" data-position="right">Right</button>
-                        </div>
-                    </div>
-
                     <button type="submit" class="generate-btn">🎨 Generate Business Card</button>
                 </form>
             </div>
@@ -359,7 +344,10 @@
             <div class="card">
                 <h2>Preview & Download</h2>
                 <div class="preview-section" id="previewSection">
-                    <div class="business-card qr-left" id="businessCard">
+                    <div class="business-card" id="businessCard">
+                        <div class="logo-display" id="logoDisplay">
+                            <img id="cardLogoImage" src="" alt="Logo">
+                        </div>
                         <div class="qr-section">
                             <div id="qrcode"></div>
                         </div>
@@ -380,7 +368,6 @@
         let qrCodeInstance = null;
         let currentVCard = '';
         let logoDataUrl = null;
-        let qrPosition = 'left';
 
         // Logo upload handler
         document.getElementById('logoInput').addEventListener('change', function(e) {
@@ -395,15 +382,6 @@
                 };
                 reader.readAsDataURL(file);
             }
-        });
-
-        // Position selector
-        document.querySelectorAll('.position-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.position-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                qrPosition = this.dataset.position;
-            });
         });
 
         // Generate Business Card
@@ -429,14 +407,22 @@
             // Update card styling
             const businessCard = document.getElementById('businessCard');
             businessCard.style.backgroundColor = cardBgColor;
-            businessCard.className = `business-card qr-${qrPosition}`;
+
+            // Show/hide logo on card
+            const logoDisplay = document.getElementById('logoDisplay');
+            if (logoDataUrl) {
+                document.getElementById('cardLogoImage').src = logoDataUrl;
+                logoDisplay.classList.add('show');
+            } else {
+                logoDisplay.classList.remove('show');
+            }
 
             // Display contact info
             let infoHTML = '';
-            infoHTML += `<div style="font-size: 22px; font-weight: 600; margin-bottom: 10px;">${fullName}</div>`;
-            if (company) infoHTML += `<div style="font-size: 16px; opacity: 0.9;">${company}</div>`;
-            if (email) infoHTML += `<div style="font-size: 14px; opacity: 0.85;">${email}</div>`;
-            if (phone) infoHTML += `<div style="font-size: 14px; opacity: 0.85;">${phone}</div>`;
+            infoHTML += `<div style="font-size: 24px; font-weight: 700; margin-bottom: 5px;">${fullName}</div>`;
+            if (company) infoHTML += `<div style="font-size: 17px; opacity: 0.9; font-weight: 500;">${company}</div>`;
+            if (email) infoHTML += `<div style="font-size: 15px; opacity: 0.85; margin-top: 15px;">${email}</div>`;
+            if (phone) infoHTML += `<div style="font-size: 15px; opacity: 0.85;">${phone}</div>`;
             
             const infoSection = document.getElementById('infoSection');
             infoSection.innerHTML = infoHTML;
@@ -445,17 +431,17 @@
             // Clear previous QR code
             document.getElementById('qrcode').innerHTML = '';
 
-            // Generate new QR code
+            // Generate new QR code with larger size for better scanning
             qrCodeInstance = new QRCode(document.getElementById('qrcode'), {
                 text: currentVCard,
-                width: 180,
-                height: 180,
+                width: 200,
+                height: 200,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
+                correctLevel: QRCode.CorrectLevel.M
             });
 
-            // Add logo if uploaded
+            // Add logo if uploaded (smaller to maintain scannability)
             if (logoDataUrl) {
                 setTimeout(() => {
                     addLogoToQR();
@@ -473,13 +459,13 @@
                 const ctx = canvas.getContext('2d');
                 const img = new Image();
                 img.onload = function() {
-                    const logoSize = canvas.width * 0.25;
+                    const logoSize = canvas.width * 0.2;
                     const x = (canvas.width - logoSize) / 2;
                     const y = (canvas.height - logoSize) / 2;
                     
                     // Draw white background for logo
                     ctx.fillStyle = 'white';
-                    ctx.fillRect(x - 8, y - 8, logoSize + 16, logoSize + 16);
+                    ctx.fillRect(x - 6, y - 6, logoSize + 12, logoSize + 12);
                     
                     // Draw logo
                     ctx.drawImage(img, x, y, logoSize, logoSize);
