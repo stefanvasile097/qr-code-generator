@@ -188,11 +188,12 @@
         }
 
         .logo-display {
-            max-width: 200px;
-            max-height: 100px;
+            max-width: 250px;
+            max-height: 120px;
             display: none;
             align-items: center;
             justify-content: center;
+            padding: 10px;
         }
 
         .logo-display.show {
@@ -205,6 +206,7 @@
             width: auto;
             height: auto;
             object-fit: contain;
+            display: block;
         }
 
         .qr-section {
@@ -228,9 +230,10 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
+            align-items: flex-end;
+            text-align: right;
             gap: 10px;
+            padding-right: 10px;
         }
 
         .info-section div {
@@ -417,10 +420,10 @@
 
             // Display contact info
             let infoHTML = '';
-            infoHTML += `<div style="font-size: 24px; font-weight: 700; margin-bottom: 5px;">${fullName}</div>`;
-            if (company) infoHTML += `<div style="font-size: 17px; opacity: 0.9; font-weight: 500;">${company}</div>`;
-            if (email) infoHTML += `<div style="font-size: 15px; opacity: 0.85; margin-top: 15px;">${email}</div>`;
-            if (phone) infoHTML += `<div style="font-size: 15px; opacity: 0.85;">${phone}</div>`;
+            infoHTML += `<div style="font-size: 30px; font-weight: 700; margin-bottom: 5px;">${fullName}</div>`;
+            if (company) infoHTML += `<div style="font-size: 23px; opacity: 0.9; font-weight: 400;">${company}</div>`;
+            if (email) infoHTML += `<div style="font-size: 17px; opacity: 0.85; margin-top: 15px;">${email}</div>`;
+            if (phone) infoHTML += `<div style="font-size: 17px; opacity: 0.85;">${phone}</div>`;
             
             const infoSection = document.getElementById('infoSection');
             infoSection.innerHTML = infoHTML;
