@@ -230,15 +230,15 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
-            text-align: right;
-            gap: 10px;
-            padding-right: 10px;
+            align-items: flex-start;
+            text-align: left;
+            gap: 0px;
+            padding-left: 10px;
         }
 
         .info-section div {
             font-size: 16px;
-            line-height: 1.6;
+            line-height: 1.4;
             word-break: break-word;
             width: 100%;
         }
@@ -420,10 +420,10 @@
 
             // Display contact info
             let infoHTML = '';
-            infoHTML += `<div style="font-size: 30px; font-weight: 700; margin-bottom: 5px;">${fullName}</div>`;
-            if (company) infoHTML += `<div style="font-size: 23px; opacity: 0.9; font-weight: 400;">${company}</div>`;
-            if (email) infoHTML += `<div style="font-size: 17px; opacity: 0.85; margin-top: 15px;">${email}</div>`;
-            if (phone) infoHTML += `<div style="font-size: 17px; opacity: 0.85;">${phone}</div>`;
+            infoHTML += `<div style="font-size: 37px; font-weight: 700; margin-bottom: 0px;">${fullName}</div>`;
+            if (company) infoHTML += `<div style="font-size: 29px; opacity: 0.9; font-weight: 400;">${company}</div>`;
+            if (email) infoHTML += `<div style="font-size: 21px; opacity: 0.85; margin-top: 5px;">${email}</div>`;
+            if (phone) infoHTML += `<div style="font-size: 21px; opacity: 0.85;">${phone}</div>`;
             
             const infoSection = document.getElementById('infoSection');
             infoSection.innerHTML = infoHTML;
